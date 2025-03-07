@@ -1,15 +1,19 @@
+import mongoose from "mongoose";
 import app from "./app";
-import dotenv from "dotenv"
+import config from "./app/config";
 
-dotenv.config()
-
-let server;
 
 
 async function main(){
-    server = app.listen(process.env.PORT, ()=>{
-        console.log(`Application is a listening on port ${process.env.PORT}`)
-    })
+    try {
+        await mongoose.connect(config.database_uri as string)
+        app.listen(config.port, ()=>{
+            console.log(`Application is a listening on port ${config.port}`)
+        })
+        
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 main()
