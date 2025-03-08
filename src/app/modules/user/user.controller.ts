@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { UserServices } from "./user.service";
 
-const registerUser = async(req:Request, res:Response)=>{
+const registerUser = async(req:Request, res:Response, next:NextFunction)=>{
     try {
         const user = req.body
     const result  = await UserServices.registerUserIntoDB(user)
@@ -13,7 +13,7 @@ const registerUser = async(req:Request, res:Response)=>{
         data:result
     })
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
 
