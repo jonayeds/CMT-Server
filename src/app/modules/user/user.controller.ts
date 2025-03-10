@@ -1,9 +1,8 @@
-import { NextFunction, Request, Response } from "express";
 import { UserServices } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
+import { catchAsync } from "../../utils/catchAsync";
 
-const registerUser = async(req:Request, res:Response, next:NextFunction)=>{
-    try {
+const registerUser = catchAsync(async(req, res, next)=>{
         const user = req.body
     const result  = await UserServices.registerUserIntoDB(user)
     sendResponse(res, {
@@ -12,10 +11,7 @@ const registerUser = async(req:Request, res:Response, next:NextFunction)=>{
         success:true,
         data:result
     })
-    } catch (error) {
-        next(error)
-    }
-}
+})
 
 export const UserControllers = {
     registerUser
