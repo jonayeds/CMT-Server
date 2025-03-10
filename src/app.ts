@@ -1,6 +1,8 @@
-import express, { Application,  ErrorRequestHandler,  NextFunction,  Request, Response } from "express"
+import express, { Application, Request, Response } from "express"
 import cors from "cors"
 import { UserRoutes } from "./app/modules/user/user.routes"
+import { errorHandler } from "./app/middlewares/globalErrorHandler"
+import { notFound } from "./app/middlewares/notFound"
 const app:Application = express()
 
 // persers
@@ -17,17 +19,11 @@ app.get("/", (req:Request,res:Response)=>{
     res.send("Server is Running...🏃🏼‍♂️‍➡️")
 })
 
-const errorHandler: ErrorRequestHandler = (err:any, req:Request, res:Response, next:NextFunction)=>{
-    let statusCode = 500
-    let message = "Something went wrong"
-    res.status(statusCode).json({
-        success:false,
-        message,
-        error:err
-    })
-}
+
 
 
 app.use(errorHandler)
+
+app.use(notFound)
 
 export default app
