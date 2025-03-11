@@ -1,10 +1,14 @@
-import express from "express"
-import { UserControllers } from "./user.controller"
-import { validateRequest } from "../../middlewares/validateRequest"
-import { UserValidations } from "./user.validation"
+import express from "express";
+import { UserControllers } from "./user.controller";
+import { validateRequest } from "../../middlewares/validateRequest";
+import { UserValidations } from "./user.validation";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/register-user",validateRequest(UserValidations.registerUserValidation) ,  UserControllers.registerUser)
+router.post(
+  "/register-user",
+  validateRequest(UserValidations.registerUserValidation),
+  UserControllers.registerUser
+);
 
-export const UserRoutes = router
+export const UserRoutes = router;

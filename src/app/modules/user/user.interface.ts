@@ -1,3 +1,5 @@
+import { Model } from "mongoose";
+
 export interface IUser {
     name:string;
     id:string;
@@ -5,4 +7,8 @@ export interface IUser {
     email:string;
     profileImage:string;
     role:"faculty" | "student";
+}
+
+export interface IUserModel extends Model<IUser>{
+    isUserExist(email:string): Promise<IUser| null>
 }
