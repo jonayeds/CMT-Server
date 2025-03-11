@@ -33,6 +33,9 @@ const loginUser = async(loginData:IAuth)=>{
     if(!user){
         throw new Error("User not found")
     }
+    const isPasswordCorrect = await User.isPasswordCorrect(loginData.password, user.password)
+    
+    return user
 }
 
 export const UserServices = {

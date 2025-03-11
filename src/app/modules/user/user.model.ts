@@ -50,6 +50,11 @@ userSchema.static("isUserExist", async function ({ email, id }) {
   return null;
 });
 
+userSchema.static("isPasswordCorrect",async function(plainTextPassword, hashedPassword){
+  const isCorrect =  await bcrypt.compare(plainTextPassword, hashedPassword)
+  return isCorrect
+})
+
 // pre save middleware
 userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, Number(config.salt_rounds));
