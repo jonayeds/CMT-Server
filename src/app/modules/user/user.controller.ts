@@ -5,6 +5,11 @@ import { catchAsync } from "../../utils/catchAsync";
 const registerUser = catchAsync(async(req, res, next)=>{
         const user = req.body
     const result  = await UserServices.registerUserIntoDB(user)
+    res.cookie("accessToken", result.accessToken, {
+        httpOnly:true,
+        secure:true,
+        sameSite:"strict"
+    })
     sendResponse(res, {
         statusCode:200,
         message:"Registered Successfully",

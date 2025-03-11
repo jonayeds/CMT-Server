@@ -15,7 +15,8 @@ const userSchema = new Schema<IUser, IUserModel>({
     },
     id:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     password:{
         type:String,
@@ -34,12 +35,18 @@ const userSchema = new Schema<IUser, IUserModel>({
 
 
 // Statics
-userSchema.static("isUserExist", async function(email:string){
-    const user = await User.findOne({email})
-    if(user){
-        return user
+userSchema.static("isUserExist", async function(email:string, id:string){
+    const userByEmail = await User.findOne({email})
+    if(userByEmail){
+        return userByEmail
     }else{
-        return null
+        const userById = await User.findOne({id})
+        if(userById){
+            return userById
+        }else{
+            return null;
+        }
+  
     }
 })
 

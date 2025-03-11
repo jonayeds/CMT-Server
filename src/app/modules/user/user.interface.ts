@@ -10,5 +10,5 @@ export interface IUser {
 }
 
 export interface IUserModel extends Model<IUser>{
-    isUserExist(email:string): Promise<IUser| null>
+    isUserExist(email:string, id:string): Promise<IUser| null>
 }
