@@ -1,10 +1,10 @@
 import { AnyZodObject } from "zod";
+import { catchAsync } from "../utils/catchAsync";
 
 
-export const validateRequest = async(zodSchema: AnyZodObject) =>{
-    try {
-        
-    } catch (error) {
-        console.log(error)
-    }
+export const validateRequest = (zodSchema: AnyZodObject) =>{
+    return catchAsync(async(req,res,next)=>{
+        await zodSchema.parseAsync(req.body)
+        next()
+    })
 }
