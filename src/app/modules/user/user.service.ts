@@ -1,10 +1,10 @@
 import config from "../../config";
-import { IUser } from "./user.interface";
+import { IAuth, IUser } from "./user.interface";
 import { User } from "./user.model";
 import jwt from "jsonwebtoken";
 
 const registerUserIntoDB = async (user: IUser) => {
-  const isUserExist = await User.isUserExist(user.email, user.id);
+  const isUserExist = await User.isUserExist({email:user.email, id:user.id});
   if (isUserExist) {
     throw new Error("User Already Exists!!!");
   }
@@ -27,6 +27,15 @@ const registerUserIntoDB = async (user: IUser) => {
   return {data:result, accessToken};
 };
 
+
+const loginUser = async(loginData:IAuth)=>{
+    const user = await User.isUserExist({id:loginData.id})
+    if(!user){
+        throw new Error("User not found")
+    }
+}
+
 export const UserServices = {
   registerUserIntoDB,
+  loginUser
 };

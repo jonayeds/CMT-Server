@@ -1,69 +1,65 @@
 import { model, Schema } from "mongoose";
 import { IUser, IUserModel } from "./user.interface";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 import config from "../../config";
 
-const userSchema = new Schema<IUser, IUserModel>({
-    name:{
-        type:String,
-        required:true
+const userSchema = new Schema<IUser, IUserModel>(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    id:{
-        type:String,
-        required:true,
-        unique:true
+    id: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    password:{
-        type:String,
-        required:true,
+    password: {
+      type: String,
+      required: true,
     },
-    profileImage:{
-        type:String,
+    profileImage: {
+      type: String,
     },
-    role:{
-        type:String,
-        enum:["faculty", "student"]
-    }
-},{
-    timestamps:true
-})
-
+    role: {
+      type: String,
+      enum: ["faculty", "student"],
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 // Statics
-userSchema.static("isUserExist", async function(email:string, id:string){
-    const userByEmail = await User.findOne({email})
-    if(userByEmail){
-        return userByEmail
-    }else{
-        const userById = await User.findOne({id})
-        if(userById){
-            return userById
-        }else{
-            return null;
-        }
-  
-    }
-})
-
-
-
-
+userSchema.static("isUserExist", async function ({ email, id }) {
+  let user;
+  if (email) {
+    user = await User.findOne({ email });
+    if(user) return user
+  }
+  if (id) {
+    user = await User.findOne({ id });
+    if(user) return user
+  }
+  return null;
+});
 
 // pre save middleware
 userSchema.pre("save", async function (next) {
-    this.password = await bcrypt.hash(this.password, Number(config.salt_rounds))
-    next()
-})
+  this.password = await bcrypt.hash(this.password, Number(config.salt_rounds));
+  next();
+});
 
 // post save middleware
-userSchema.post('save', function (doc, next) {
-    doc.password = '';
-    next();
-  });
+userSchema.post("save", function (doc, next) {
+  doc.password = "";
+  next();
+});
 
-export const User = model<IUser, IUserModel>("User", userSchema)
+export const User = model<IUser, IUserModel>("User", userSchema);

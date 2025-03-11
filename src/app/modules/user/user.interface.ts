@@ -10,5 +10,11 @@ export interface IUser {
 }
 
 export interface IUserModel extends Model<IUser>{
-    isUserExist(email:string, id:string): Promise<IUser| null>
+    isUserExist({email, id}: {email?:string, id?:string}): Promise<IUser| null>
 }
+
+export interface IAuth{
+    id:string;
+    password:string;
+}
+

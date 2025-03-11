@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 
 const registerUserValidation = z.object({
     name:z.string(),
@@ -8,6 +8,12 @@ const registerUserValidation = z.object({
     profileImage:z.string().optional(),
 })
 
+const loginUserValidationSchema = z.object({
+    id:z.string({required_error:"Id is Required"}),
+    password:z.string({required_error:"Password is Required"})
+})
+
 export const UserValidations = {
-    registerUserValidation
+    registerUserValidation,
+    loginUserValidationSchema
 }
