@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
-import { IClassroom } from "./classroom.interface";
+import { IClassroom, IClassroomModel } from "./classroom.interface";
 
-const classroomSchema = new Schema<IClassroom>({
+const classroomSchema = new Schema<IClassroom, IClassroomModel>({
     courseTitle:{
         type:String,
         required:true,
@@ -22,4 +22,19 @@ const classroomSchema = new Schema<IClassroom>({
     timestamps:true
 })
 
-export const Classroom = model<IClassroom>("Classroom", classroomSchema)
+// statics
+classroomSchema.static("isClassroomExists", async function(faculty, courseTitle, courseCode) {
+    const classroom = await Classroom.findOne({
+        faculty,
+        courseTitle,
+        courseCode
+    })
+    if(classroom){
+        return classroom
+    }else{
+        return null
+    }
+})
+
+
+export const Classroom = model<IClassroom, IClassroomModel>("Classroom", classroomSchema)
