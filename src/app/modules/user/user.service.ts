@@ -1,7 +1,7 @@
 import config from "../../config";
+import { signJwt } from "../../utils/signJwt";
 import { IAuth, IUser } from "./user.interface";
 import { User } from "./user.model";
-import jwt from "jsonwebtoken";
 
 const registerUserIntoDB = async (user: IUser) => {
   const isUserExist = await User.isUserExist({email:user.email, id:user.id});
@@ -20,9 +20,7 @@ const registerUserIntoDB = async (user: IUser) => {
     email:result.email,
     role:result.role
   }
-  const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string,{
-    expiresIn:'10d'
-  } )
+  const accessToken = signJwt(jwtPayload, config.jwt_access_secret as string, "10d" )
 
   return {data:result, accessToken};
 };
@@ -34,8 +32,22 @@ const loginUser = async(loginData:IAuth)=>{
         throw new Error("User not found")
     }
     const isPasswordCorrect = await User.isPasswordCorrect(loginData.password, user.password)
+    if(!isPasswordCorrect){
+      throw new Error("Incorrect password or email!!!")
+    }
+
+    // sign accessToken
+    const jwtPayload = {
+      id:user.id,
+      email:user.email,
+      role:user.role
+    }
+    const accessToken = signJwt(jwtPayload, config.jwt_access_secret as string, "10d")
     
-    return user
+    return {
+      data:user,
+      accessToken
+    }
 }
 
 export const UserServices = {
