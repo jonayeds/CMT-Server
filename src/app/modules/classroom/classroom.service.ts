@@ -11,6 +11,24 @@ const createClassroomIntoDB = async(payload:IClassroom)=>{
     return result
 }
 
+const getAllClassrooms = async()=>{
+    const result = await Classroom.find().populate("faculty")
+    return result
+}
+
+const getASingleClassroom = async(classroomId:string)=>{
+    const result = await Classroom.findById(classroomId).populate("faculty")
+    return result
+}
+
+const deleteClassroomFromDB = async(classroomId:string)=>{
+    const result = await Classroom.findByIdAndDelete(classroomId)
+    return result
+}
+
 export const ClassroomService = {
-    createClassroomIntoDB
+    createClassroomIntoDB,
+    getAllClassrooms,
+    getASingleClassroom,
+    deleteClassroomFromDB,
 }

@@ -1,10 +1,20 @@
-import express from "express"
-import { ClassroomController } from "./classroom.controller"
-import { ClassroomValidation } from "./classroom.validation"
-import { validateRequest } from "../../middlewares/validateRequest"
+import express from "express";
+import { ClassroomController } from "./classroom.controller";
+import { ClassroomValidation } from "./classroom.validation";
+import { validateRequest } from "../../middlewares/validateRequest";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/", validateRequest(ClassroomValidation.createClassroomSchema), ClassroomController.createClassroom )
+router.post(
+  "/",
+  validateRequest(ClassroomValidation.createClassroomSchema),
+  ClassroomController.createClassroom
+);
 
-export const ClassroomRoutes = router
+router.get("/:classroomId", ClassroomController.getASingleClassroom);
+
+router.get("/", ClassroomController.getAllClassrooms);
+
+router.delete("/:classroomId", ClassroomController.deleteClassroom)
+
+export const ClassroomRoutes = router;

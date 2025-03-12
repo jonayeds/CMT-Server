@@ -13,6 +13,41 @@ const createClassroom = catchAsync(async(req,res,next)=>{
     })
 })
 
+const getAllClassrooms = catchAsync(async(req,res,next)=>{
+    const result = await ClassroomService.getAllClassrooms()
+    sendResponse(res,{
+        success:true,
+        statusCode:200,
+        message:"Successfully fetched all Classrooms",
+        data:result
+    })
+})
+
+const getASingleClassroom = catchAsync(async(req, res, next)=>{
+    const classroomId = req.params.classroomId
+    const result = await ClassroomService.getASingleClassroom(classroomId)
+    sendResponse(res,{
+        success:true,
+        message:"Successfully fetched Classroom data",
+        statusCode:200,
+        data:result
+    })
+})
+
+const deleteClassroom = catchAsync(async(req, res, next)=>{
+    const {classroomId} = req.params
+    const result = await ClassroomService.deleteClassroomFromDB(classroomId)
+    sendResponse(res,{
+        success:true,
+        statusCode:200,
+        message:"Successfully deleted Classroom",
+        data:result
+    })
+})
+
 export const ClassroomController = {
-    createClassroom
+    createClassroom,
+    getAllClassrooms,
+    getASingleClassroom,
+    deleteClassroom,
 }

@@ -16,6 +16,7 @@ const classroomSchema = new Schema<IClassroom, IClassroomModel>({
     },
     faculty:{
         type:Schema.Types.ObjectId,
+        ref:"User",
         required:true
     }
 },{
