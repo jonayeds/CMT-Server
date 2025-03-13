@@ -67,6 +67,12 @@ const joinClassroom = async(joiningCode:string, user:JwtPayload)=>{
 }
 
 const leaveClassroom = async(classroomId:string, user:JwtPayload)=>{
+    const isAttendanceExists = await Attendance.findOne({classroom:classroomId, student:user._id})
+    if(!isAttendanceExists){
+        throw new Error("You are not in this classroom")
+    }
+    const result = await Attendance.findByIdAndDelete(isAttendanceExists._id)
+    return result
 
 }
 
