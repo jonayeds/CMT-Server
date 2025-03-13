@@ -1,11 +1,12 @@
+import { JwtPayload } from "jsonwebtoken";
 import { CustomRequest } from "../../middlewares/auth";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { ClassroomService } from "./classroom.service";
 
-const createClassroom = catchAsync(async(req,res,next)=>{
+const createClassroom = catchAsync(async(req:CustomRequest,res,next)=>{
     const classroomData = req.body
-    const result = await ClassroomService.createClassroomIntoDB(classroomData)
+    const result = await ClassroomService.createClassroomIntoDB(classroomData, req.user as JwtPayload)
     sendResponse(res,{
         success:true,
         message:"Successfully created Classroom",
@@ -14,7 +15,7 @@ const createClassroom = catchAsync(async(req,res,next)=>{
     })
 })
 
-const getAllClassrooms = catchAsync(async(req:CustomRequest,res,next)=>{
+const getAllClassrooms = catchAsync(async(req,res,next)=>{
     const result = await ClassroomService.getAllClassrooms()
     sendResponse(res,{
         success:true,
@@ -35,9 +36,10 @@ const getASingleClassroom = catchAsync(async(req, res, next)=>{
     })
 })
 
-const deleteClassroom = catchAsync(async(req, res, next)=>{
+const deleteClassroom = catchAsync(async(req:CustomRequest, res, next)=>{
     const {classroomId} = req.params 
-    const result = await ClassroomService.deleteClassroomFromDB(classroomId)
+    const user = req.user
+    const result = await ClassroomService.deleteClassroomFromDB(classroomId, user as JwtPayload)
     sendResponse(res,{
         success:true,
         statusCode:200,

@@ -18,6 +18,8 @@ router.get("/:classroomId", ClassroomController.getASingleClassroom);
 
 router.get("/",ClassroomController.getAllClassrooms);
 
-router.delete("/:classroomId", ClassroomController.deleteClassroom)
+router.delete("/:classroomId",auth(userRoles.FACULTY), ClassroomController.deleteClassroom)
+
+router.post("/join-classroom",  )
 
 export const ClassroomRoutes = router;
