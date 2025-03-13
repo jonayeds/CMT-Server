@@ -16,10 +16,24 @@ router.post(
 
 router.get("/:classroomId", ClassroomController.getASingleClassroom);
 
-router.get("/",ClassroomController.getAllClassrooms);
+router.get("/", ClassroomController.getAllClassrooms);
 
-router.delete("/:classroomId",auth(userRoles.FACULTY), ClassroomController.deleteClassroom)
+router.delete(
+  "/:classroomId",
+  auth(userRoles.FACULTY),
+  ClassroomController.deleteClassroom
+);
 
-router.post("/join-classroom",auth(userRoles.STUDENT), ClassroomController.joinClassroom  )
+router.post(
+  "/join-classroom",
+  auth(userRoles.STUDENT),
+  ClassroomController.joinClassroom
+);
+
+router.delete(
+  "/leave-classroom/:classroomId",
+  auth(userRoles.STUDENT),
+  ClassroomController.leaveClassroom
+);
 
 export const ClassroomRoutes = router;
