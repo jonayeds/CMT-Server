@@ -1,7 +1,8 @@
 {
-  "include":["src"],
+  "include":["src/**/*", "src/types/**/*.d.ts"],
   "exclude":["node_modules"],
   "compilerOptions": {
+    "typeRoots": ["./node_modules/@interfaces", "./src/interfaces", "./node_modules/@types", "./src/types"],
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Projects */

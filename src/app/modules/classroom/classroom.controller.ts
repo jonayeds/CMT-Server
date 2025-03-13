@@ -1,3 +1,4 @@
+import { CustomRequest } from "../../middlewares/auth";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { ClassroomService } from "./classroom.service";
@@ -13,8 +14,9 @@ const createClassroom = catchAsync(async(req,res,next)=>{
     })
 })
 
-const getAllClassrooms = catchAsync(async(req,res,next)=>{
+const getAllClassrooms = catchAsync(async(req:CustomRequest,res,next)=>{
     const result = await ClassroomService.getAllClassrooms()
+    console.log(req.user)
     sendResponse(res,{
         success:true,
         statusCode:200,
@@ -35,7 +37,7 @@ const getASingleClassroom = catchAsync(async(req, res, next)=>{
 })
 
 const deleteClassroom = catchAsync(async(req, res, next)=>{
-    const {classroomId} = req.params
+    const {classroomId} = req.params 
     const result = await ClassroomService.deleteClassroomFromDB(classroomId)
     sendResponse(res,{
         success:true,
