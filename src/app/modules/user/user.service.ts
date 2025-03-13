@@ -16,6 +16,7 @@ const registerUserIntoDB = async (user: IUser) => {
 
   //   sign jwt token
   const jwtPayload  = {
+    _id:result._id,
     id:result.id,
     email:result.email,
     role:result.role
@@ -38,6 +39,7 @@ const loginUser = async(loginData:IAuth)=>{
 
     // sign accessToken
     const jwtPayload = {
+      _id:user._id,
       id:user.id,
       email:user.email,
       role:user.role

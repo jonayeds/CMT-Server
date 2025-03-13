@@ -14,19 +14,19 @@ const attendanceSchema = new Schema<IAttendance>({
     },
     classes:{
         type:Number,
-        required:true
+        default:0
     },
     present:{
         type:Number,
-        required:true
+        default:0
     },
     absent:{
         type:Number,
-        required:true
+        default:0
     },
     late:{
         type:Number,
-        required:true
+        default:0
     },
 }, {timestamps:true})
 

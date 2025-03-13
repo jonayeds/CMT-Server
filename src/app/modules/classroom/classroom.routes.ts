@@ -20,6 +20,6 @@ router.get("/",ClassroomController.getAllClassrooms);
 
 router.delete("/:classroomId",auth(userRoles.FACULTY), ClassroomController.deleteClassroom)
 
-router.post("/join-classroom",  )
+router.post("/join-classroom",auth(userRoles.STUDENT), ClassroomController.joinClassroom  )
 
 export const ClassroomRoutes = router;

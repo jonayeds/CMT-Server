@@ -9,8 +9,10 @@ export interface IUser {
     role:"faculty" | "student";
 }
 
+
+
 export interface IUserModel extends Model<IUser>{
-    isUserExist({email, id}: {email?:string, id?:string}): Promise<IUser| null>
+    isUserExist({email, id}: {email?:string, id?:string}): Promise<IUser & {_id:string}| null>
     isPasswordCorrect(plainTextPassword:string, hashedPassword:string):Promise<boolean>
 }
 
