@@ -16,7 +16,6 @@ const createClassroom = catchAsync(async(req,res,next)=>{
 
 const getAllClassrooms = catchAsync(async(req:CustomRequest,res,next)=>{
     const result = await ClassroomService.getAllClassrooms()
-    console.log(req.user)
     sendResponse(res,{
         success:true,
         statusCode:200,

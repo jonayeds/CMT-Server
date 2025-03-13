@@ -6,7 +6,12 @@ const createClassroomIntoDB = async(payload:IClassroom)=>{
     if(isClassroomExists){
         throw new Error("Classroom already exist!!!")
     }
-    payload.joiningCode = "abcd"
+    while(true){
+        const joiningCode = Math.random().toString(36).substring(2, 6);
+        const isJoiningCodeExists =await Classroom.findOne({joiningCode})
+        payload.joiningCode = joiningCode
+        if(!isJoiningCodeExists) break
+    }
     const result = await Classroom.create(payload)
     return result
 }

@@ -19,7 +19,6 @@ export const auth = (...requiredRoles:TUserRole[]) =>{
                 throw new Error("You are not Authorize")
             }
             const {role} = deccoded as JwtPayload
-            console.log(requiredRoles)
             if(requiredRoles && !requiredRoles.includes(role)){
                 throw new Error("You are not Authorized")
             }

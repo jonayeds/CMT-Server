@@ -13,6 +13,7 @@ const classroomSchema = new Schema<IClassroom, IClassroomModel>({
     joiningCode:{
         type:String,
         required:true,
+        unique:true
     },
     faculty:{
         type:Schema.Types.ObjectId,

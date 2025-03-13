@@ -16,7 +16,7 @@ router.post(
 
 router.get("/:classroomId", ClassroomController.getASingleClassroom);
 
-router.get("/", auth() ,ClassroomController.getAllClassrooms);
+router.get("/",ClassroomController.getAllClassrooms);
 
 router.delete("/:classroomId", ClassroomController.deleteClassroom)
 
