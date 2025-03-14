@@ -4,16 +4,28 @@ import { Classroom } from "./classroom.model";
 import { Attendance } from "../attendance/attendance.model";
 import { userRoles } from "../user/user.constant";
 import mongoose from "mongoose";
+import { hasClassConflicts } from "./classroom.utils";
 
 const createClassroomIntoDB = async (payload: IClassroom, user: JwtPayload) => {
   const isClassroomExists = await Classroom.isClassroomExists(
-    payload.faculty,
+    user._id,
     payload.courseTitle,
     payload.courseCode
   );
   if (isClassroomExists) {
     throw new Error("Classroom already exist!!!");
   }
+  const existingClasses = await Classroom.find({faculty:user._id}).select("classDays startTime endTime");
+  const newSchedule = {
+    classDays:payload.classDays,
+    startTime:payload.startTime,
+    endTime:payload.endTime
+  }
+  const hasConflict = hasClassConflicts(newSchedule,existingClasses);
+  if(hasConflict){
+    throw new Error("Classroom time slot is already taken");
+  }
+
 
   payload.faculty = user?._id;
   while (true) {

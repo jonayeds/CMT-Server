@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { IClassroom, IClassroomModel } from "./classroom.interface";
+import { days } from "./classroom.validation";
 
 const classroomSchema = new Schema<IClassroom, IClassroomModel>({
     courseTitle:{
@@ -18,6 +19,19 @@ const classroomSchema = new Schema<IClassroom, IClassroomModel>({
     faculty:{
         type:Schema.Types.ObjectId,
         ref:"User",
+        required:true
+    },
+    classDays:{
+        type:[String],
+        required:true,
+        enum:days
+    },
+    startTime:{
+        type:String,
+        required:true
+    },
+    endTime:{
+        type:String,
         required:true
     }
 },{
