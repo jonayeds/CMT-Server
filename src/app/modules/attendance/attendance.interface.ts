@@ -8,3 +8,9 @@ export interface IAttendance {
     late:number;
     student:Types.ObjectId;
 }
+
+export interface IAttendanceResponse extends IAttendance {
+    _id:Types.ObjectId;
+    createdAt:Date;
+    updatedAt:Date;
+}
