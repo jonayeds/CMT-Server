@@ -1,8 +1,9 @@
 import { JwtPayload } from "jsonwebtoken";
 import { IClassroom } from "./classroom.interface";
 import { Classroom } from "./classroom.model";
-import { User } from "../user/user.model";
 import { Attendance } from "../attendance/attendance.model";
+import { userRoles } from "../user/user.constant";
+import mongoose from "mongoose";
 
 const createClassroomIntoDB = async (payload: IClassroom, user: JwtPayload) => {
   const isClassroomExists = await Classroom.isClassroomExists(
@@ -82,6 +83,39 @@ const leaveClassroom = async (classroomId: string, user: JwtPayload) => {
   return result;
 };
 
+const getMyClassrooms = async(user:JwtPayload)=>{
+    if(user.role === userRoles.STUDENT){
+        const result = await Attendance.aggregate([
+            {
+                $match: {
+                    student: new mongoose.Types.ObjectId(user._id)
+                }
+            },
+            {
+                $lookup: {
+                    from: "classrooms",
+                    localField: "classroom",
+                    foreignField: "_id",
+                    as: "classroomDetails"
+                }
+            },
+            {
+                $unwind: "$classroomDetails"
+            },
+            {
+                $replaceRoot: { 
+                    newRoot: "$classroomDetails" 
+                }
+            }
+        ])
+        return result
+    }else if(user.role === userRoles.FACULTY){
+      const result = await Classroom.find({faculty:user._id})
+      return result
+    }
+    return null
+}
+
 export const ClassroomService = {
   createClassroomIntoDB,
   getAllClassrooms,
@@ -89,4 +123,5 @@ export const ClassroomService = {
   deleteClassroomFromDB,
   joinClassroom,
   leaveClassroom,
+  getMyClassrooms
 };

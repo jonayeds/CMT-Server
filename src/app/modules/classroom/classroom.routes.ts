@@ -14,6 +14,12 @@ router.post(
   ClassroomController.createClassroom
 );
 
+router.get(
+  "/my-classrooms",
+  auth(userRoles.STUDENT,userRoles.FACULTY),
+  ClassroomController.getMyClassrooms
+);
+
 router.get("/:classroomId", ClassroomController.getASingleClassroom);
 
 router.get("/", ClassroomController.getAllClassrooms);

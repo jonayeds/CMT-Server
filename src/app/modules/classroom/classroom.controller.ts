@@ -71,11 +71,22 @@ const leaveClassroom = catchAsync(async(req:CustomRequest, res, next)=>{
     }) 
 })
 
+const getMyClassrooms = catchAsync(async(req:CustomRequest, res, next)=>{
+    const result = await ClassroomService.getMyClassrooms(req.user as JwtPayload)
+    sendResponse(res,{
+        success:true,
+        message:"Successfully fetched my classrooms",
+        statusCode:200,
+        data:result
+    })
+})
+
 export const ClassroomController = {
     createClassroom,
     getAllClassrooms,
     getASingleClassroom,
     deleteClassroom,
     joinClassroom,
-    leaveClassroom
+    leaveClassroom,
+    getMyClassrooms
 }
