@@ -1,5 +1,4 @@
 import cron from "node-cron"
-import { Classroom } from "../classroom/classroom.model"
 import { TDays } from "../classroom/classroom.interface"
 import { Attendance } from "./attendance.model"
 
@@ -20,6 +19,21 @@ export const updateClassCountSchedule = (classroomId:string, endTime:string, cla
         const currentDay = now.toLocaleString('en-US', { weekday: 'long' });
         if(classDays.includes(currentDay as TDays)){
             console.log(`🔔 Class ${classroomId} is ending at ${endTime}`)
+            try {
+                await Attendance.updateMany({classroom:classroomId},
+                    [
+                        {
+                            $set:{
+                                absent:{ $subtract:[{$add:["$classes", 1]}, {$add:["$present", "$late"]}] },
+                                classes:{$add:["$classes", 1]}
+                            }
+                        }
+                    ]
+                )
+                console.log(`🔔 Class ${classroomId} updated`)
+            } catch (error) {
+                console.log(error)
+            }
         }
     })
 
