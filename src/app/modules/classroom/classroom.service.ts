@@ -79,6 +79,46 @@ const joinClassroom = async (joiningCode: string, user: JwtPayload) => {
   if (isAttendanceExists) {
     throw new Error("Already Joined this Classroom!!!");
   }
+  const myClassrooms = await Attendance.aggregate([
+    {
+        $match: {
+            student: new mongoose.Types.ObjectId(user._id)
+        }
+    },
+    {
+        $lookup: {
+            from: "classrooms",
+            localField: "classroom",
+            foreignField: "_id",
+            as: "classroomDetails"
+        }
+    },
+    {
+        $unwind: "$classroomDetails"
+    },
+    {
+        $replaceRoot: { 
+            newRoot: "$classroomDetails" 
+        }
+    },
+    {
+      $project:{
+        _id:0,
+        classDays:1,
+        startTime:1,
+        endTime:1
+      }
+    }
+])
+const newSchedule = {
+  classDays:isClassroomExists.classDays,
+  startTime:isClassroomExists.startTime,
+  endTime:isClassroomExists.endTime
+}
+const hasClassConflict = hasClassConflicts(newSchedule,myClassrooms);
+if(hasClassConflict){
+  throw new Error("Classroom time slot is already taken");
+}
   const attendance = {
     classroom: isClassroomExists._id,
     student: user._id,
