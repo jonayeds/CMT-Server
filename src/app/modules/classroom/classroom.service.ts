@@ -5,6 +5,7 @@ import { Attendance } from "../attendance/attendance.model";
 import { userRoles } from "../user/user.constant";
 import mongoose from "mongoose";
 import { hasClassConflicts } from "./classroom.utils";
+import { updateClassCountSchedule } from "../attendance/attendance.schedule";
 
 const createClassroomIntoDB = async (payload: IClassroom, user: JwtPayload) => {
   const isClassroomExists = await Classroom.isClassroomExists(
@@ -35,6 +36,9 @@ const createClassroomIntoDB = async (payload: IClassroom, user: JwtPayload) => {
     if (!isJoiningCodeExists) break;
   }
   const result = await Classroom.create(payload);
+  if(result){
+    updateClassCountSchedule(result._id.toString(), result.endTime, result.classDays)
+  }
   return result;
 };
 

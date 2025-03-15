@@ -2,7 +2,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { Attendance } from "./attendance.model";
 import { IClassroom, TDays } from "../classroom/classroom.interface";
 import { IAttendanceResponse } from "./attendance.interface";
-import { getTimeDifference, isTimeBetween } from "./attendance.utils";
+import { getClassStartedSince, getTimeDifference, isTimeBetween } from "./attendance.utils";
 
 const updateAttendance = async (classroomId: string, user: JwtPayload) => {
   const isJoined = await Attendance.findOne({
@@ -23,7 +23,7 @@ const updateAttendance = async (classroomId: string, user: JwtPayload) => {
   if (!isClassDay) {
     throw new Error("Today is not a class day");
   }
-  const timeDifference = getTimeDifference(startTime, updatedAt);
+  const timeDifference = getTimeDifference(updatedAt);
 
 if(createdAt.getTime() !== updatedAt.getTime() && timeDifference< 2){
     throw new Error("You have already updated your attendance");
@@ -34,12 +34,23 @@ if(!isClassRunning){
     throw new Error("Class is not running");
 }
 
-  return {
-    classDays,
-    startTime,
-    endTime,
-    currentDay,
-  };
+const startedSince = getClassStartedSince(startTime);
+if(startedSince>15){
+    const result = await Attendance.findByIdAndUpdate(isJoined._id, {
+        $set:{
+            late:isJoined.late+1,
+        }
+    },{new:true})
+    return result;
+}else{
+    const result = await Attendance.findByIdAndUpdate(isJoined._id, {
+        $set:{
+            present:isJoined.present+1,
+        }
+    },{new:true})
+    return result;
+}
+
 };
 
 export const AttendanceService = {
