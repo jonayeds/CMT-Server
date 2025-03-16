@@ -54,8 +54,20 @@ const deleteContent = async(contentId:string,user:JwtPayload)=>{
     return result
 }
 
+const getASingleContent = async(contentId:string,user:JwtPayload)=>{
+    const isContentExists = await Content.findById(contentId).populate("classroom")
+    if(!isContentExists){
+        throw new Error("Content not found")
+    }
+    if((isContentExists.classroom as unknown as IClassroom)?.faculty?.toString() !== user._id){
+        throw new Error("You are not authorized to access this content")
+    }
+    return isContentExists
+}
+
 export const ContentService = {
     createContent,
     getClassroomContents,
-    deleteContent
+    deleteContent,
+    getASingleContent
 }

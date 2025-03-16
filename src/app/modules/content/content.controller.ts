@@ -37,8 +37,20 @@ const deleteContent = catchAsync(async(req:CustomRequest, res, next)=>{
     })
 })
 
+const getASingleContent = catchAsync(async(req:CustomRequest, res, next)=>{
+    const {contentId} = req.params
+    const result = await ContentService.getASingleContent(contentId, req.user as JwtPayload)
+    sendResponse(res,{
+        success:true,
+        statusCode:200,
+        message:"Content fetched successfully",
+        data:result,
+    })
+})
+
 export const ContentController = {
     createContent,
     getClassroomContents,
-    deleteContent
+    deleteContent,
+    getASingleContent
 }
