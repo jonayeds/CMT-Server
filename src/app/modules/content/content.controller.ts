@@ -15,6 +15,30 @@ const createContent = catchAsync(async(req:CustomRequest,res,next)=>{
     })
 })
 
+const getClassroomContents = catchAsync(async(req:CustomRequest, res, next)=>{
+    const {classroomId} = req.params
+    const result = await ContentService.getClassroomContents(classroomId, req.user as JwtPayload)
+    sendResponse(res,{
+        success:true,
+        statusCode:200,
+        message:"Classroom contents fetched successfully",
+        data:result,
+    })
+})
+
+const deleteContent = catchAsync(async(req:CustomRequest, res, next)=>{
+    const {contentId} = req.params
+    const result = await ContentService.deleteContent(contentId, req.user as JwtPayload)
+    sendResponse(res,{
+        success:true,
+        statusCode:200,
+        message:"Content deleted successfully",
+        data:result,
+    })
+})
+
 export const ContentController = {
     createContent,
+    getClassroomContents,
+    deleteContent
 }
