@@ -17,10 +17,6 @@ const chatSchema = new Schema<IChat>({
         ref:"Classroom",
         required:true
     },
-    schedule:{
-        type:Date,
-        required:true
-    }
 },{
     timestamps:true
 })
