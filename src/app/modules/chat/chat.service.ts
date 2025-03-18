@@ -1,8 +1,8 @@
 import { JwtPayload } from "jsonwebtoken";
 import { Chat } from "./chat.model";
 import { Attendance } from "../attendance/attendance.model";
-import { IChat } from "./chat.interface";
 import { IClassroom } from "../classroom/classroom.interface";
+import { Classroom } from "../classroom/classroom.model";
 
 const sendChatRequest = async (classroomId: string, user: JwtPayload) => {
     const isJoined = await Attendance.findOne({classroom:classroomId, student:user._id})
@@ -34,11 +34,22 @@ const handleChatRequest = async (payload:{chatId:string, status:string}, user: J
     }
     const result = await Chat.findByIdAndUpdate(isChatExists._id, {status:payload.status}, {new:true})
     return result
-    
-    
 }
+
+const getClassroomChatRequests = async(classroomId:string, user:JwtPayload) => {
+    const isClassroomExists = await Classroom.findById(classroomId)
+    if(!isClassroomExists){
+        throw new Error("Classroom not found")
+    }
+    if(isClassroomExists.faculty.toString() !== user._id){
+        throw new Error("You are not authorized to view this classroom's chat requests")
+    }
+    const result = await Chat.find({classroom:classroomId}).populate("student classroom")
+    return result
+}   
 
 export const ChatService = {
   sendChatRequest,
   handleChatRequest,
+  getClassroomChatRequests
 };
