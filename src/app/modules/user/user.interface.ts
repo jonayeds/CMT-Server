@@ -12,12 +12,12 @@ export interface IUser {
 
 
 export interface IUserModel extends Model<IUser>{
-    isUserExist({email, id}: {email?:string, id?:string}): Promise<IUser & {_id:string}| null>
+    isUserExist({email, id, identification}: {email?:string, id?:string, identification?:string}): Promise<IUser & {_id:string}| null>
     isPasswordCorrect(plainTextPassword:string, hashedPassword:string):Promise<boolean>
 }
 
 export interface IAuth{
-    id:string;
+    identification:string;
     password:string;
 }
 

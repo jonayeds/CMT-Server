@@ -9,7 +9,7 @@ const registerUserValidation = z.object({
 })
 
 const loginUserValidationSchema = z.object({
-    id:z.string({required_error:"Id is Required"}),
+    identification:z.string({required_error:"Email or ID required"}),
     password:z.string({required_error:"Password is Required"})
 })
 

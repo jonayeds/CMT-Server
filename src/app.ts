@@ -8,7 +8,10 @@ const app: Application = express();
 
 // persers
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  credentials:true,
+  origin:["*"]
+}));
 
 // application Routes
 app.use("/api/v1/", router);

@@ -1,7 +1,9 @@
+import strict from "assert/strict";
 import config from "../../config";
 import { signJwt } from "../../utils/signJwt";
 import { IAuth, IUser } from "./user.interface";
 import { User } from "./user.model";
+import { JwtPayload } from "jsonwebtoken";
 
 const registerUserIntoDB = async (user: IUser) => {
   const isUserExist = await User.isUserExist({email:user.email, id:user.id});
@@ -28,7 +30,7 @@ const registerUserIntoDB = async (user: IUser) => {
 
 
 const loginUser = async(loginData:IAuth)=>{
-    const user = await User.isUserExist({id:loginData.id})
+    const user = await User.isUserExist({identification: loginData.identification})
     if(!user){
         throw new Error("User not found")
     }
@@ -52,7 +54,13 @@ const loginUser = async(loginData:IAuth)=>{
     }
 }
 
+const getMe = async(user:JwtPayload)=>{
+  const result = User.findById(user._id)
+  return result
+}
+
 export const UserServices = {
   registerUserIntoDB,
-  loginUser
+  loginUser,
+  getMe
 };

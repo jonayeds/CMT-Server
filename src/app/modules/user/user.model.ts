@@ -37,7 +37,7 @@ const userSchema = new Schema<IUser, IUserModel>(
 );
 
 // Statics
-userSchema.static("isUserExist", async function ({ email, id }) {
+userSchema.static("isUserExist", async function ({ email, id, identification }) {
   let user;
   if (email) {
     user = await User.findOne({ email });
@@ -46,6 +46,13 @@ userSchema.static("isUserExist", async function ({ email, id }) {
   if (id) {
     user = await User.findOne({ id });
     if(user) return user
+  }
+  if(identification){
+    user = await User.findOne({ email: identification })
+    if(!user){
+      user = await User.findOne({id:identification})
+    }
+    return user
   }
   return null;
 });

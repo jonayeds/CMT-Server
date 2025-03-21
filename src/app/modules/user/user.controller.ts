@@ -1,6 +1,8 @@
 import { UserServices } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { catchAsync } from "../../utils/catchAsync";
+import { JwtPayload } from "jsonwebtoken";
+import { CustomRequest } from "../../middlewares/auth";
 
 const registerUser = catchAsync(async (req, res, next) => {
   const user = req.body;
@@ -29,8 +31,19 @@ const loginUser = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const getMe = catchAsync(async (req:CustomRequest, res, next) => {
+  
+  const result = await UserServices.getMe(req.user as JwtPayload);
+  sendResponse(res, {
+    success: true,
+    message: "Successfully fetched current user",
+    statusCode: 200,
+    data: result,
+  });
+});
 
 export const UserControllers = {
   registerUser,
   loginUser,
+  getMe
 };
