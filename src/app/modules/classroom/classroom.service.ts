@@ -52,10 +52,18 @@ const getAllClassrooms = async () => {
   return result;
 };
 
-const getASingleClassroom = async (classroomId: string) => {
+const getASingleClassroom = async (classroomId: string, user:JwtPayload) => {
   const result = await Classroom.findById(classroomId).populate("faculty");
   if (!result) {
     throw new Error("Classroom  not found!!!");
+  }
+  if(user.role === userRoles.STUDENT){
+    const isAttendanceExists = await Attendance.findOne({classroom:classroomId, student:user._id})
+    if(!isAttendanceExists){
+      throw new Error("You are not joined in this classroom")
+    }
+  }else if(user._id.toString() !== result.faculty.toString() ){
+    throw new Error("You are not owner of this classroom")
   }
   return result;
 };

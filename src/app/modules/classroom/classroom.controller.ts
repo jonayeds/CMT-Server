@@ -25,9 +25,9 @@ const getAllClassrooms = catchAsync(async(req,res,next)=>{
     })
 })
 
-const getASingleClassroom = catchAsync(async(req, res, next)=>{
+const getASingleClassroom = catchAsync(async(req:CustomRequest, res, next)=>{
     const classroomId = req.params.classroomId
-    const result = await ClassroomService.getASingleClassroom(classroomId)
+    const result = await ClassroomService.getASingleClassroom(classroomId, req.user as JwtPayload)
     sendResponse(res,{
         success:true,
         message:"Successfully fetched Classroom data",

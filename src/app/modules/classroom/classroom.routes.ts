@@ -20,7 +20,7 @@ router.get(
   ClassroomController.getMyClassrooms
 );
 
-router.get("/:classroomId", ClassroomController.getASingleClassroom);
+router.get("/:classroomId",auth(userRoles.FACULTY, userRoles.STUDENT), ClassroomController.getASingleClassroom);
 
 router.get("/", ClassroomController.getAllClassrooms);
 
