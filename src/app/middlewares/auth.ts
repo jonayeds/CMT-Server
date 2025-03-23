@@ -11,6 +11,7 @@ export interface CustomRequest extends Request{
 export const auth = (...requiredRoles:TUserRole[]) =>{
     return catchAsync(async (req:CustomRequest,res,next)=>{
         const token = req.headers.authorization
+        
         if(!token){
             throw new Error("You are not Authorize")
         }   
