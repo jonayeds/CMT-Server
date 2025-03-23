@@ -8,7 +8,7 @@ import { IClassroom } from "../classroom/classroom.interface";
 
 
 const createContent = async(payload:IContent, user:JwtPayload)=>{
-    if(!(payload.contentFile && payload.contentLink)){
+    if(!(payload.contentFiles.length && payload.contentLinks.length)){
         throw new Error("Content file or link is required")
     }
     const isClassroomExists = await Classroom.findById(payload.classroom)

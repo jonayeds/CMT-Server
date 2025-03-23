@@ -4,6 +4,6 @@ export interface IContent {
     classroom:Types.ObjectId;
     title:string;
     description:string;
-    contentFile:string;
-    contentLink:string;
+    contentFiles:string[];
+    contentLinks:string[];
 }

@@ -62,7 +62,7 @@ const getASingleClassroom = async (classroomId: string, user:JwtPayload) => {
     if(!isAttendanceExists){
       throw new Error("You are not joined in this classroom")
     }
-  }else if(user._id.toString() !== result.faculty.toString() ){
+  }else if(user._id.toString() !== result.faculty._id.toString() ){
     throw new Error("You are not owner of this classroom")
   }
   return result;

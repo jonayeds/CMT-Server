@@ -14,11 +14,11 @@ const contentSchema = new Schema<IContent>({
     description:{
         type:String,
     },
-    contentFile:{
-        type:String,
+    contentFiles:{
+        type:[String],
     },
-    contentLink:{
-        type:String,
+    contentLinks:{
+        type:[String],
     },
 },{timestamps:true})
 
