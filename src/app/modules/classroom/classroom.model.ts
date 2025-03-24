@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 import { IClassroom, IClassroomModel } from "./classroom.interface";
 import { days } from "./classroom.validation";
+import { Attendance } from "../attendance/attendance.model";
 
 const classroomSchema = new Schema<IClassroom, IClassroomModel>({
     courseTitle:{
@@ -50,6 +51,12 @@ classroomSchema.static("isClassroomExists", async function(faculty, courseTitle,
     }else{
         return null
     }
+})
+
+classroomSchema.static("isJoinedClassroom", async function(student, classroom){
+    const attendance = await Attendance.findOne({student, classroom})
+    if(attendance) return true
+    return false
 })
 
 

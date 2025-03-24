@@ -215,6 +215,22 @@ const getMyClassrooms = async (user: JwtPayload) => {
   return null;
 };
 
+const getClassroomStudents = async(classroomId:string, user:JwtPayload)=>{
+  if(user.role === "student"){
+    const isJoined = await Classroom.isJoinedClassroom(user._id, classroomId)
+    if(!isJoined){
+      throw new Error("Not joined in this classroom");
+    }
+  }else{
+    const isClassroomExists = await Classroom.findOne({faculty:user._id, _id:classroomId})
+    if(!isClassroomExists){
+      throw new Error("Classroom does not exists!!!");
+    }
+  }
+  const result = await Attendance.find({classroom:classroomId})
+  return result
+}
+
 export const ClassroomService = {
   createClassroomIntoDB,
   getAllClassrooms,
@@ -223,4 +239,5 @@ export const ClassroomService = {
   joinClassroom,
   leaveClassroom,
   getMyClassrooms,
+  getClassroomStudents
 };

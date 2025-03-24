@@ -13,4 +13,5 @@ export interface IClassroom {
 
 export interface IClassroomModel extends Model<IClassroom>{
     isClassroomExists(faculty:Types.ObjectId, courseTitle:string, courseCode:string):Promise<IClassroom | null>
+    isJoinedClassroom(student:string, classroom:string):Promise<boolean>
 }

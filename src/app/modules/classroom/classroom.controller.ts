@@ -81,6 +81,17 @@ const getMyClassrooms = catchAsync(async(req:CustomRequest, res, next)=>{
     })
 })
 
+const getClassroomStudents = catchAsync(async (req:CustomRequest,res,next)=>{
+    const {classroomId} = req.params
+    const result = await ClassroomService.getClassroomStudents(classroomId, req.user as JwtPayload) 
+    sendResponse(res,{
+        success:true,
+        message:"Successfully fetched All students of the classroom",
+        statusCode:200,
+        data:result
+    })
+})
+
 export const ClassroomController = {
     createClassroom,
     getAllClassrooms,
@@ -88,5 +99,6 @@ export const ClassroomController = {
     deleteClassroom,
     joinClassroom,
     leaveClassroom,
-    getMyClassrooms
+    getMyClassrooms,
+    getClassroomStudents
 }
