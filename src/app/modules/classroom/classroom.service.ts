@@ -227,7 +227,7 @@ const getClassroomStudents = async(classroomId:string, user:JwtPayload)=>{
       throw new Error("Classroom does not exists!!!");
     }
   }
-  const result = await Attendance.find({classroom:classroomId})
+  const result = await Attendance.find({classroom:classroomId}).populate("student")
   return result
 }
 

@@ -1,12 +1,15 @@
 import cron from "node-cron"
 import { TDays } from "../classroom/classroom.interface"
 import { Attendance } from "./attendance.model"
+import { WeekdayValues } from "./attendance.constant"
 
 const activeCronJobs:{[key:string]:cron.ScheduledTask} = {}
 
 export const updateClassCountSchedule = (classroomId:string, endTime:string, classDays:TDays[])=>{
     const [endHour, endMinute] = endTime.split(":").map(Number);
-    const cronExpression = `${endMinute} ${endHour} * * *`;
+    const dayValues = classDays.map(day => WeekdayValues[day]).join(",");
+    const cronExpression = `${endMinute} ${endHour} * * ${dayValues}`;
+    console.log(cronExpression)
 
     if (activeCronJobs[classroomId]) {
         console.log(`🛑 Stopping previous job for class ${classroomId}`);
@@ -39,5 +42,13 @@ export const updateClassCountSchedule = (classroomId:string, endTime:string, cla
 
     activeCronJobs[classroomId] = newJob;
     console.log(`🚀 New job scheduled for class ${classroomId}`);
+}
+
+export const deleteClassSchedule = (classroomId:string)=>{
+    if(activeCronJobs[classroomId]){
+        activeCronJobs[classroomId].stop()
+        delete activeCronJobs[classroomId]
+        console.log(`🛑 Cron job deleted for ${classroomId}`)
+    }
 }
 
