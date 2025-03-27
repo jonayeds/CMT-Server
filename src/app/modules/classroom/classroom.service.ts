@@ -5,7 +5,7 @@ import { Attendance } from "../attendance/attendance.model";
 import { userRoles } from "../user/user.constant";
 import mongoose from "mongoose";
 import { hasClassConflicts } from "./classroom.utils";
-import { updateClassCountSchedule } from "../attendance/attendance.schedule";
+import { deleteClassSchedule, updateClassCountSchedule } from "../attendance/attendance.schedule";
 
 const createClassroomIntoDB = async (payload: IClassroom, user: JwtPayload) => {
   const isClassroomExists = await Classroom.isClassroomExists(
@@ -87,6 +87,7 @@ const deleteClassroomFromDB = async (classroomId: string, user: JwtPayload) => {
     if(!result){
       throw new Error("Something went wrong")
     }
+    deleteClassSchedule(classroomId)
     await session.commitTransaction()
     await session.endSession()
     return result;

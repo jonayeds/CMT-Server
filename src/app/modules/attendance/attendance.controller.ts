@@ -14,6 +14,18 @@ const updateAttendance = catchAsync(async(req:CustomRequest, res,next)=>{
     })
 })
 
+const getMyAttendances = catchAsync(async(req:CustomRequest, res,next)=>{
+    const user = req.user;
+    const result = await AttendanceService.getMyAttendances( user as JwtPayload);
+    res.status(200).json({
+        success:true,
+        message:"Fetched Attendances successfully",
+        data:result
+    })
+})
+
+
 export const AttendanceController = {
-    updateAttendance
+    updateAttendance,
+    getMyAttendances
 }

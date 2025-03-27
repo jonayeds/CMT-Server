@@ -53,6 +53,13 @@ if(startedSince>15){
 
 };
 
+
+const getMyAttendances = async(user:JwtPayload)=>{
+    const result  = await Attendance.find({student:user._id}).populate("classroom")
+    return result
+}
+
 export const AttendanceService = {
   updateAttendance,
+  getMyAttendances
 };

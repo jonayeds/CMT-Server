@@ -6,5 +6,6 @@ import { auth } from "../../middlewares/auth";
 const router = Router();
 
 router.patch("/update-attendance/:classroomId", auth(userRoles.STUDENT), AttendanceController.updateAttendance);
+router.patch("/my-attendances", auth(userRoles.STUDENT), AttendanceController.getMyAttendances);
 
 export const AttendanceRoutes = router;
