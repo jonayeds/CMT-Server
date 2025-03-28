@@ -6,6 +6,7 @@ import { userRoles } from "../user/user.constant";
 import mongoose from "mongoose";
 import { hasClassConflicts } from "./classroom.utils";
 import { deleteClassSchedule, updateClassCountSchedule } from "../attendance/attendance.schedule";
+import { User } from "../user/user.model";
 
 const createClassroomIntoDB = async (payload: IClassroom, user: JwtPayload) => {
   const isClassroomExists = await Classroom.isClassroomExists(
@@ -232,6 +233,20 @@ const getClassroomStudents = async(classroomId:string, user:JwtPayload)=>{
   return result
 }
 
+const removeStudentFromClassroom = async(classroomId:string, studentId:string, user:JwtPayload)=>{
+  const isclassroomOwner = Classroom.findOne({faculty:user._id})
+  if(!isclassroomOwner){
+    throw new Error("You are not Authorized to remove user!");
+  }
+  const isStudentExist = User.findById(studentId)
+  if(!isStudentExist){
+    throw new Error("Student not found!!");
+    
+  }
+  const result = await Attendance.findOneAndDelete({student:studentId, classroom:classroomId})
+  return result
+}
+
 export const ClassroomService = {
   createClassroomIntoDB,
   getAllClassrooms,
@@ -240,5 +255,6 @@ export const ClassroomService = {
   joinClassroom,
   leaveClassroom,
   getMyClassrooms,
-  getClassroomStudents
+  getClassroomStudents,
+  removeStudentFromClassroom,
 };

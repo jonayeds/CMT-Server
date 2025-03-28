@@ -92,6 +92,18 @@ const getClassroomStudents = catchAsync(async (req:CustomRequest,res,next)=>{
     })
 })
 
+
+const removeStudentFromClassroom = catchAsync(async (req:CustomRequest,res,next)=>{
+    const {classroomId, studentId} = req.body
+    const result = await ClassroomService.removeStudentFromClassroom( classroomId,studentId ,req.user as JwtPayload) 
+    sendResponse(res,{
+        success:true,
+        message:"Successfully reomved student from the classroom",
+        statusCode:200,
+        data:result
+    })
+})
+
 export const ClassroomController = {
     createClassroom,
     getAllClassrooms,
@@ -100,5 +112,6 @@ export const ClassroomController = {
     joinClassroom,
     leaveClassroom,
     getMyClassrooms,
-    getClassroomStudents
+    getClassroomStudents,
+    removeStudentFromClassroom,
 }

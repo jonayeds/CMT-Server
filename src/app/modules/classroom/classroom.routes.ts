@@ -42,6 +42,12 @@ router.delete(
   ClassroomController.leaveClassroom
 );
 
+router.delete(
+  "/remove-student",
+  auth(userRoles.FACULTY),
+  ClassroomController.removeStudentFromClassroom
+);
+
 router.get("/get-students/:classroomId", auth(userRoles.FACULTY, userRoles.STUDENT), ClassroomController.getClassroomStudents)
 
 export const ClassroomRoutes = router;
