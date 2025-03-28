@@ -25,6 +25,11 @@ router.get("/:classroomId",auth(userRoles.FACULTY, userRoles.STUDENT), Classroom
 router.get("/", ClassroomController.getAllClassrooms);
 
 router.delete(
+  "/remove-student",
+  auth(userRoles.FACULTY),
+  ClassroomController.removeStudentFromClassroom
+);
+router.delete(
   "/:classroomId",
   auth(userRoles.FACULTY),
   ClassroomController.deleteClassroom
@@ -42,11 +47,6 @@ router.delete(
   ClassroomController.leaveClassroom
 );
 
-router.delete(
-  "/remove-student",
-  auth(userRoles.FACULTY),
-  ClassroomController.removeStudentFromClassroom
-);
 
 router.get("/get-students/:classroomId", auth(userRoles.FACULTY, userRoles.STUDENT), ClassroomController.getClassroomStudents)
 

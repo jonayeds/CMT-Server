@@ -36,8 +36,19 @@ const getClassroomChatRequests = catchAsync(async(req:CustomRequest, res, next)=
     })
 })
 
+const getMyPendingChatRequests = catchAsync(async(req:CustomRequest, res, next)=>{
+    const result = await ChatService.getMyPendingChatRequests(req.user as JwtPayload)
+    sendResponse(res,{
+        success:true,
+        statusCode:200,
+        message:"Your chat requests fetched successfully",
+        data:result
+    })
+})
+
 export const ChatController = {
     sendChatRequest,
     handleChatRequest,
-    getClassroomChatRequests
+    getClassroomChatRequests,
+    getMyPendingChatRequests,
 }

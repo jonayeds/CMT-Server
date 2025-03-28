@@ -229,7 +229,7 @@ const getClassroomStudents = async(classroomId:string, user:JwtPayload)=>{
       throw new Error("Classroom does not exists!!!");
     }
   }
-  const result = await Attendance.find({classroom:classroomId}).populate("student")
+  const result = await Attendance.find({classroom:classroomId}).populate("student classroom")
   return result
 }
 
@@ -243,7 +243,7 @@ const removeStudentFromClassroom = async(classroomId:string, studentId:string, u
     throw new Error("Student not found!!");
     
   }
-  const result = await Attendance.findOneAndDelete({student:studentId, classroom:classroomId})
+  const result = await Attendance.findOneAndDelete({student: studentId, classroom:classroomId})
   return result
 }
 

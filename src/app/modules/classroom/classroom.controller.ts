@@ -95,6 +95,7 @@ const getClassroomStudents = catchAsync(async (req:CustomRequest,res,next)=>{
 
 const removeStudentFromClassroom = catchAsync(async (req:CustomRequest,res,next)=>{
     const {classroomId, studentId} = req.body
+    console.log(classroomId,studentId)
     const result = await ClassroomService.removeStudentFromClassroom( classroomId,studentId ,req.user as JwtPayload) 
     sendResponse(res,{
         success:true,
