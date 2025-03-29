@@ -46,9 +46,21 @@ const getMyPendingChatRequests = catchAsync(async(req:CustomRequest, res, next)=
     })
 })
 
+const cancelChatRequests = catchAsync(async(req:CustomRequest, res, next)=>{
+    const {chatId} = req.params
+    const result = await ChatService.cancelChatrequest( chatId,req.user as JwtPayload)
+    sendResponse(res,{
+        success:true,
+        statusCode:200,
+        message:"Chat request canceled succesfully",
+        data:result
+    })
+})
+
 export const ChatController = {
     sendChatRequest,
     handleChatRequest,
     getClassroomChatRequests,
     getMyPendingChatRequests,
+    cancelChatRequests
 }

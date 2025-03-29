@@ -28,4 +28,11 @@ router.get(
   auth(userRoles.FACULTY),
   ChatController.getClassroomChatRequests
 );
+router.delete(
+  "/cancel-chat-request/:chatId",
+  auth(userRoles.STUDENT),
+  ChatController.cancelChatRequests
+);
+
+
 export const ChatRoutes = router;
