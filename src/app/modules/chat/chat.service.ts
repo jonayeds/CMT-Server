@@ -23,7 +23,11 @@ const sendChatRequest = async (classroomId: string, user: JwtPayload) => {
   return result;
 };
 
-const handleChatRequest = async (payload:{chatId:string, status:string}, user: JwtPayload) => {
+const handleChatRequest = async (payload:{chatId:string, status:string, schedule?:string}, user: JwtPayload) => {
+    if(payload.status ==="accepted" && !payload.schedule ){
+        throw new Error("Schedule is needed to accept request!!!");
+        
+    }
     const isChatExists = await Chat.findById(payload.chatId).populate("classroom")
     if(!isChatExists){
         throw new Error("Chat request not found")
@@ -34,8 +38,9 @@ const handleChatRequest = async (payload:{chatId:string, status:string}, user: J
     if(isChatExists.status === "accepted" || isChatExists.status === "rejected"){
         throw new Error("Chat request is already handled")
     }
-    const result = await Chat.findByIdAndUpdate(isChatExists._id, {status:payload.status}, {new:true})
-    return result
+    // const result = await Chat.findByIdAndUpdate(isChatExists._id, {status:payload.status}, {new:true})
+    // return result
+    return {}
 }
 
 const getClassroomChatRequests = async(classroomId:string, user:JwtPayload) => {
@@ -66,8 +71,8 @@ const getMyPendingChatRequests = async(user:JwtPayload)=>{
                     localField:"_id",
                     foreignField:"classroom",
                     from:"chats",
-                    as:"chatRequests"
-                }
+                    as:"chatRequests",
+                },
             },
             {
                 $unwind:{
@@ -89,7 +94,17 @@ const getMyPendingChatRequests = async(user:JwtPayload)=>{
                     from:"users",
                     localField:"student",
                     foreignField:"_id",
-                    as:"student"
+                    as:"student",
+                    pipeline:[
+                        {
+                            $project:{
+                                _id:0,
+                                name:1,
+                                id:1,
+                                profileImage:1,
+                            }
+                        }
+                    ]
                 }
             },
             {
@@ -97,7 +112,16 @@ const getMyPendingChatRequests = async(user:JwtPayload)=>{
                     from:"classrooms",
                     localField:"classroom",
                     foreignField:"_id",
-                    as:"classroom"
+                    as:"classroom",
+                    pipeline:[
+                        {
+                            $project:{
+                                _id:0,
+                                courseTitle:1,
+                                courseCode:1
+                            }
+                        }
+                    ]
                 }
             },
             {
