@@ -24,6 +24,11 @@ router.get(
   ChatController.getMyPendingChatRequests
 );
 router.get(
+  "/my-chats",
+  auth(userRoles.FACULTY, userRoles.STUDENT),
+  ChatController.getMyChats
+);
+router.get(
   "/classroom-chat-requests/:classroomId",
   auth(userRoles.FACULTY),
   ChatController.getClassroomChatRequests

@@ -5,7 +5,7 @@ import { IClassroom } from "../classroom/classroom.interface";
 import { Classroom } from "../classroom/classroom.model";
 import { userRoles } from "../user/user.constant";
 import mongoose from "mongoose";
-import { openChatSchedule } from "./chat.schedule";
+import { closeChatSchedule, openChatSchedule } from "./chat.schedule";
 
 const sendChatRequest = async (classroomId: string, user: JwtPayload) => {
   const isJoined = await Attendance.findOne({
@@ -69,6 +69,7 @@ const handleChatRequest = async (
   });
   if(result){
     openChatSchedule(result._id.toString(), result.schedule)
+    closeChatSchedule(result._id.toString(), result.schedule)
   }
   return result;
 };
@@ -248,11 +249,76 @@ const cancelChatrequest = async(chatId:string, user:JwtPayload)=>{
     return result
 }
 
+const getMyChats = async(user:JwtPayload) =>{
+  if(user.role === userRoles.STUDENT){
+    const result = await Chat.find({student:user._id, status:"accepted", isActive:true}).sort("-updatedAt")
+    return result
+  }else{
+    const result = await Classroom.aggregate([
+      {
+        $match:{
+          faculty: new mongoose.Types.ObjectId(user._id)
+        }
+      },
+      {
+        $lookup:{
+          from:"chats",
+          localField:"_id",
+          foreignField:"classroom",
+          as:"chat"
+        }
+      },
+      {
+        $unwind:{
+          path:"$chat"
+        }
+      },
+      {
+        $replaceRoot:{
+          newRoot:{
+            $mergeObjects:[
+              "$$ROOT",
+              {classroom: {courseTitle:"$courseTitle", courseCode:"$courseCode"}}
+            ]
+          }
+        }
+      },
+      {
+        $project:{
+          classroom:1,
+          _id:0,
+          chat:1,
+        }
+      },
+      {
+        $replaceRoot:{
+          newRoot:{
+            $mergeObjects:[
+              "$chat",
+              {classroom:"$classroom"}
+            ]
+          }
+        }
+      },
+      {
+        $match:{
+          isActive:true,
+          status:"accepted"
+        }
+      }
+      
+    ])
+    return result
+  }
+
+}
+
 
 export const ChatService = {
   sendChatRequest,
   handleChatRequest,
   getClassroomChatRequests,
   getMyPendingChatRequests,
-  cancelChatrequest
+  cancelChatrequest,
+  getMyChats
 };

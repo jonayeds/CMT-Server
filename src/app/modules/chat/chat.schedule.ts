@@ -2,12 +2,12 @@ import cron from "node-cron";
 import { Chat } from "./chat.model";
 
 const activeChatCronJobs: { [key: string]: cron.ScheduledTask } = {};
+const closeChatCronJobs: {[key:string]:cron.ScheduledTask} ={}
 
 export const openChatSchedule = (chatId: string, schedule: Date) => {
 
   const cronExpression = `${schedule.getMinutes()} ${schedule.getHours()} ${schedule.getDate()} ${schedule.getMonth()+1} *`;
   console.log(cronExpression);
-  console.log("Local time :", schedule.toString());
 
   if (activeChatCronJobs[chatId]) {
     console.log(`🛑 Stopping previous job for class ${chatId}`);
@@ -16,7 +16,6 @@ export const openChatSchedule = (chatId: string, schedule: Date) => {
   }
 
   const newJob = cron.schedule(cronExpression, async() => {
-    console.log("Running job")
     try {
       const result = await Chat.findByIdAndUpdate(chatId, { isActive: true });
       if (result) {
@@ -27,5 +26,32 @@ export const openChatSchedule = (chatId: string, schedule: Date) => {
     }
   });
   activeChatCronJobs[chatId] = newJob;
+  console.log(`new job scheduled for chat ${chatId}`);
+};
+
+
+export const closeChatSchedule = (chatId: string, schedule: Date) => {
+  schedule.setMinutes(schedule.getMinutes() + 30)
+
+  const cronExpression = `${schedule.getMinutes()} ${schedule.getHours()} ${schedule.getDate()} ${schedule.getMonth()+1} *`;
+  console.log(cronExpression);
+
+  if (closeChatCronJobs[chatId]) {
+    console.log(`🛑 Stopping previous job for class ${chatId}`);
+    closeChatCronJobs[chatId].stop();
+    delete closeChatCronJobs[chatId];
+  }
+
+  const newJob = cron.schedule(cronExpression, async() => {
+    try {
+      const result = await Chat.findByIdAndUpdate(chatId, { isActive: false });
+      if (result) {
+        console.log(`Chat is Closed now, this one ${chatId}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  closeChatCronJobs[chatId] = newJob;
   console.log(`new job scheduled for chat ${chatId}`);
 };
