@@ -5,6 +5,7 @@ import { IClassroom } from "../classroom/classroom.interface";
 import { Classroom } from "../classroom/classroom.model";
 import { userRoles } from "../user/user.constant";
 import mongoose from "mongoose";
+import { openChatSchedule } from "./chat.schedule";
 
 const sendChatRequest = async (classroomId: string, user: JwtPayload) => {
   const isJoined = await Attendance.findOne({
@@ -66,6 +67,9 @@ const handleChatRequest = async (
   const result = await Chat.findByIdAndUpdate(isChatExists._id, payload, {
     new: true,
   });
+  if(result){
+    openChatSchedule(result._id.toString(), result.schedule)
+  }
   return result;
 };
 

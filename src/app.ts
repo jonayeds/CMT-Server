@@ -3,7 +3,7 @@ import cors from "cors";
 import { errorHandler } from "./app/middlewares/globalErrorHandler";
 import { notFound } from "./app/middlewares/notFound";
 import router from "./app/routes";
-import { Attendance } from "./app/modules/attendance/attendance.model";
+import { openChatSchedule } from "./app/modules/chat/chat.schedule";
 const app: Application = express();
 
 // persers

@@ -19,6 +19,10 @@ const chatSchema = new Schema<IChat>({
     },
     schedule:{
         type:Date,
+    },
+    isActive:{
+        type:Boolean,
+        default:false
     }
 },{
     timestamps:true

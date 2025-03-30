@@ -5,4 +5,5 @@ export interface IChat {
     status:'pending' | 'accepted' | 'rejected';
     classroom:Types.ObjectId;
     schedule:Date;
+    isActive:boolean;
 }
