@@ -4,6 +4,7 @@ import { ClassroomRoutes } from "../modules/classroom/classroom.routes";
 import { AttendanceRoutes } from "../modules/attendance/attendance.routes";
 import { ContentRoutes } from "../modules/content/content.routes";
 import { ChatRoutes } from "../modules/chat/chat.routes";
+import { MessageRoutes } from "../modules/message/message.routes";
 const router = express.Router();
 
 const moduleRoutes = [
@@ -26,6 +27,10 @@ const moduleRoutes = [
   {
     path: "/chat",
     routes: ChatRoutes,
+  },
+  {
+    path: "/message",
+    routes: MessageRoutes,
   },
 ];
 

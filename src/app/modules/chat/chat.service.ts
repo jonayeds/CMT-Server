@@ -305,6 +305,28 @@ const getMyChats = async(user:JwtPayload) =>{
           isActive:true,
           status:"accepted"
         }
+      },
+      {
+        $lookup:{
+          from:"users",
+          localField:"student",
+          foreignField:"_id",
+          as:"student",
+          pipeline:[
+            {
+              $project:{
+                name:1,
+                id:1,
+                profileImage:1
+              }
+            }
+          ]
+        }
+      },
+      {
+        $unwind:{
+          path:"$student"
+        }
       }
       
     ])
