@@ -251,7 +251,59 @@ const cancelChatrequest = async(chatId:string, user:JwtPayload)=>{
 
 const getMyChats = async(user:JwtPayload) =>{
   if(user.role === userRoles.STUDENT){
-    const result = await Chat.find({student:user._id, status:"accepted", isActive:true}).sort("-updatedAt")
+    const result = await Chat.aggregate([
+      {
+        $match:{
+          student: new mongoose.Types.ObjectId(user._id),
+          status:"accepted",
+          isActive:true
+        }
+      },
+      {
+        $lookup:{
+          from:"classrooms",
+          localField:"classroom",
+          foreignField:"_id",
+          as:'classroom',
+          pipeline:[
+            {
+              $project:{
+                courseTitle:1,
+                courseCode:1,
+                faculty:1
+              }
+            },
+            {
+              $lookup:{
+                from:"users",
+                foreignField:"_id",
+                localField:"faculty",
+                as:"faculty",
+                pipeline:[
+                  {
+                    $project:{
+                      name:1,
+                      profileImage:1,
+                      email:1
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              $unwind:{
+                path:"$faculty"
+              }
+            }
+          ],
+        }
+      },
+      {
+        $unwind:{
+          path:"$classroom"
+        }
+      }
+    ]).sort("updatedAt")
     return result
   }else{
     const result = await Classroom.aggregate([

@@ -40,7 +40,7 @@ const getChatMessages =async (chatId:string, user:JwtPayload)=>{
             throw new Error("You are not in this chat");
         }
     }
-    const result = await Message.find({chat:chatId}).limit(10)
+    const result = await Message.find({chat:chatId}).sort("-createdAt").limit(10)
     return result 
 }
 
