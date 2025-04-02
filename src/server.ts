@@ -21,10 +21,14 @@ async function main(){
 
         io.on("connection", (socket)=>{
             console.log("user connected")
+            socket.on("join-chat", (chatId)=>{
+                socket.join(chatId)
+                console.log(`User ${socket.id} joined chat room ${chatId}`);
+              })
             socket.on('newMessage', (message)=>{
                 console.log("Emiting message from other user to :" ,message?.chat)
 
-                io.emit('receiveMessage', message)
+                io.to(message.chat).emit('receiveMessage', message)
             })
             
             socket.on('disconnect', ()=>{
