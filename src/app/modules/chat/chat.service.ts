@@ -24,6 +24,9 @@ const sendChatRequest = async (classroomId: string, user: JwtPayload) => {
   if (isRequestSent?.status === "pending") {
     throw new Error("You have already a pending request to this classroom");
   }
+  if (isRequestSent?.isActive) {
+    throw new Error("You have an Active chat with this classroom");
+  }
   const now = new Date();
   if (isRequestSent) {
     const schedule = new Date(isRequestSent.schedule);
