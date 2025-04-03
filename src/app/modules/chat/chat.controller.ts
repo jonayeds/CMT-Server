@@ -20,7 +20,7 @@ const handleChatRequest = catchAsync(async(req:CustomRequest, res, next)=>{
     sendResponse(res,{
         success:true,
         statusCode:200,
-        message:"Chat request handled successfully",
+        message:`Chat request ${req.body.status} successfully`,
         data:result
     })
 })  

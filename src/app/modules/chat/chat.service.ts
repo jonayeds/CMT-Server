@@ -67,7 +67,7 @@ const handleChatRequest = async (
   const result = await Chat.findByIdAndUpdate(isChatExists._id, payload, {
     new: true,
   });
-  if(result){
+  if( result && payload.status==="accepted" ){
     openChatSchedule(result._id.toString(), result.schedule)
     closeChatSchedule(result._id.toString(), result.schedule)
   }

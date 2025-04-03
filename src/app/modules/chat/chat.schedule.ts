@@ -31,7 +31,7 @@ export const openChatSchedule = (chatId: string, schedule: Date) => {
 
 
 export const closeChatSchedule = (chatId: string, schedule: Date) => {
-  schedule.setMinutes(schedule.getMinutes() + 30)
+  schedule.setMinutes(schedule.getMinutes() + 3)
 
   const cronExpression = `${schedule.getMinutes()} ${schedule.getHours()} ${schedule.getDate()} ${schedule.getMonth()+1} *`;
   console.log(cronExpression);

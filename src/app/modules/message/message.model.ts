@@ -15,6 +15,8 @@ const messageSchema = new Schema<IMessage>({
         type:String,
         enum:["faculty", "student"]
     }
+}, {
+    timestamps:true
 })
 
 export const Message = model<IMessage>("Message", messageSchema)

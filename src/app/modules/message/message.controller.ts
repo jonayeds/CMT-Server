@@ -5,9 +5,8 @@ import { MessageServices } from "./message.service";
 import { sendResponse } from "../../utils/sendResponse";
 
 const sendMessage = catchAsync(async(req:CustomRequest,res, next)=>{
-    const user = req.user
     const payload = req.body
-    const result = await MessageServices.sendMessage(user as JwtPayload, payload)
+    const result = await MessageServices.sendMessage( payload)
     sendResponse(res,{
         success:true,
         statusCode:200,
