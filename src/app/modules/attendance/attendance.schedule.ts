@@ -20,6 +20,7 @@ export const updateClassCountSchedule = (classroomId:string, endTime:string, cla
     const newJob = cron.schedule(cronExpression, async()=>{
         const now = new Date();
         const currentDay = now.toLocaleString('en-US', { weekday: 'long' });
+        console.log('testing current day: ', currentDay, ' and class days: ', classDays)
         if(classDays.includes(currentDay as TDays)){
             console.log(`🔔 Class ${classroomId} is ending at ${endTime}`)
             try {
