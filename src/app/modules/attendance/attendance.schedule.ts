@@ -39,6 +39,8 @@ export const updateClassCountSchedule = (classroomId:string, endTime:string, cla
                 console.log(error)
             }
         }
+    },{
+        timezone:"Asia/Dhaka"
     })
 
     activeCronJobs[classroomId] = newJob;
