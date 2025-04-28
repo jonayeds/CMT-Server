@@ -16,10 +16,6 @@ app.use(cors({
 // application Routes
 app.use("/api/v1/", router);
 
-// server heartbeat
-setInterval(() => {
-  console.log('Server heartbeat: ' + new Date().toISOString());
-}, 30000);
 
 
 app.get("/api/v1", async (req: Request, res: Response) => {
