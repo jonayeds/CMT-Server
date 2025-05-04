@@ -3,6 +3,7 @@ import { Attendance } from "./attendance.model";
 import { IClassroom, TDays } from "../classroom/classroom.interface";
 import { IAttendanceResponse } from "./attendance.interface";
 import { getClassStartedSince, getTimeDifference, isTimeBetween } from "./attendance.utils";
+import moment from "moment-timezone";
 
 const updateAttendance = async (classroomId: string, user: JwtPayload) => {
   const isJoined = await Attendance.findOne({
@@ -15,11 +16,10 @@ const updateAttendance = async (classroomId: string, user: JwtPayload) => {
   const { classDays, startTime, endTime } =
     isJoined.classroom as unknown as IClassroom;
   const { updatedAt, createdAt } = isJoined as unknown as IAttendanceResponse;
-  const currentDate = new Date();
-  const currentDay = currentDate.toLocaleDateString("en-US", {
-    weekday: "long",
-  });
-  const isClassDay = classDays.includes(currentDay as TDays);
+  const currentDate = moment().tz('Asia/Dhaka'); // or your desired timezone
+const today = currentDate.format('dddd');
+
+  const isClassDay = classDays.includes(today as TDays);
   if (!isClassDay) {
     throw new Error("Today is not a class day");
   }

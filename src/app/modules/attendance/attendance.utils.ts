@@ -1,11 +1,10 @@
 import moment from "moment-timezone";
 
-export const getTimeDifference = ( updatedAt: Date) => {
-    const updatedDate = new Date(updatedAt); // Convert MongoDB timestamp to Date object
-    const currentDate = new Date(); // Get current time
-    const differenceInMs = currentDate.getTime() - updatedDate.getTime(); // Difference in milliseconds
-    const differenceInHours = differenceInMs / (1000 * 60 * 60); // Convert ms to hours
-    
+
+export const getTimeDifference = (updatedAt: Date, timeZone = 'Asia/Kolkata') => {
+    const updatedDate = moment(updatedAt).tz(timeZone);
+    const currentDate = moment().tz(timeZone);
+    const differenceInHours = currentDate.diff(updatedDate, 'hours', true); // true gives fractional hours
     return differenceInHours;
 };
 
@@ -21,10 +20,10 @@ export const isTimeBetween = (startTime: string, endTime: string) => {
 }
 
 export const getClassStartedSince = (startTime: string) => {
-    const now = new Date(); 
+    const now = moment().tz('Asia/Dhaka');
+    const currentTime= now.hours() * 60 + now.minutes();
     const [startHours, startMinutes] = startTime.split(":").map(Number);
     const newStartTime = startHours * 60 + startMinutes;
-    const currentTime = now.getHours() * 60 + now.getMinutes();
     return currentTime - newStartTime;
 }
 
