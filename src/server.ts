@@ -50,7 +50,7 @@ async function main(){
                     console.log(data)
                 })
                   .catch(err => console.error('Self-ping error:', err));
-              }, 5 * 60 * 1000); 
+              }, 15 * 60 * 1000); 
         })
     } catch (error) {
         console.log(error)
