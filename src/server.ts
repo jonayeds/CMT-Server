@@ -15,7 +15,7 @@ async function main(){
         const io = new Server(server, {
             cors:{
                 origin:["https://cmt-client.vercel.app", "http://localhost:3000"],
-                credentials:true
+                credentials:true 
             }
         }) 
 
