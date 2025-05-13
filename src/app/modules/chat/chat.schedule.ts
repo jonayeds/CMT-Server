@@ -1,5 +1,6 @@
 import cron from "node-cron";
 import { Chat } from "./chat.model";
+import { Message } from "../message/message.model";
 
 const activeChatCronJobs: { [key: string]: cron.ScheduledTask } = {};
 const closeChatCronJobs: {[key:string]:cron.ScheduledTask} ={}
@@ -44,7 +45,8 @@ export const closeChatSchedule = (chatId: string, schedule: Date) => {
 
   const newJob = cron.schedule(cronExpression, async() => {
     try {
-      const result = await Chat.findByIdAndUpdate(chatId, { isActive: false });
+      const result = await Chat.findByIdAndDelete(chatId);
+      await Message.deleteMany({chat:chatId})
       if (result) {
         console.log(`Chat is Closed now, this one ${chatId}`);
       }
