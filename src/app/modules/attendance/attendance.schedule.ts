@@ -25,7 +25,7 @@ export const updateClassCountSchedule = (
   const newJob = cron.schedule(
     cronExpression,
     async () => {
-      const localTime = moment().tz("Asia/Kolkata"); // or your desired timezone
+      const localTime = moment().tz("Asia/Dhaka"); // or your desired timezone
       const today = localTime.format("dddd");
       console.log(
         "testing current day: ",

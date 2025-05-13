@@ -5,6 +5,8 @@ import { AttendanceRoutes } from "../modules/attendance/attendance.routes";
 import { ContentRoutes } from "../modules/content/content.routes";
 import { ChatRoutes } from "../modules/chat/chat.routes";
 import { MessageRoutes } from "../modules/message/message.routes";
+import { AssignmentRoutes } from "../modules/assignment/assignment.routes";
+import { SubmissionRoutes } from "../modules/submission/submission.routes";
 const router = express.Router();
 
 const moduleRoutes = [
@@ -31,6 +33,14 @@ const moduleRoutes = [
   {
     path: "/message",
     routes: MessageRoutes,
+  },
+  {
+    path: "/assignment",
+    routes: AssignmentRoutes,
+  },
+  {
+    path: "/submission",
+    routes: SubmissionRoutes,
   },
 ];
 
