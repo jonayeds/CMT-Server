@@ -8,5 +8,7 @@ import { userRoles } from "../user/user.constant";
 const router  = Router()
 
 router.post('/', auth(userRoles.FACULTY), validateRequest(AssignmentValidations.createAssignmentValidationSchema), AssignmentControllers.createAssignment)
+router.get('/:classroomId', auth(userRoles.STUDENT, userRoles.FACULTY), AssignmentControllers.getClassroomAssignments)
+router.get('/single-assignment/:assignmentId', auth(userRoles.STUDENT, userRoles.FACULTY), AssignmentControllers.getASingleAssignment)    
 
 export const AssignmentRoutes = router

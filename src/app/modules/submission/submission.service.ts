@@ -4,6 +4,7 @@ import { Submission } from "./submission.model"
 import { Assignment } from "../assignment/assignment.model"
 import { Attendance } from "../attendance/attendance.model"
 import { Classroom } from "../classroom/classroom.model"
+import { IClassroom } from "../classroom/classroom.interface"
 
 const submitAssignment =async (payload:ISubmission, user:JwtPayload)=>{
     const isAssignmentExists = await Assignment.findById(payload.assignment)
@@ -46,8 +47,38 @@ const getASingleSubmission = async (submissionId:string)=>{
     return isSubmissionExists
 }
 
+const myAssignmentSubmission = async(assignmentId:string, user:JwtPayload)=>{
+    const isAssignmentExists = await Assignment.findById(assignmentId)
+    if(!isAssignmentExists){
+        throw new Error("Assignment does not exists");
+    }   
+    const result = await Submission.findOne({assignment:assignmentId, student:user._id}) 
+    return result         
+}
+
+const evaluateSubmission = async(submissionId:string, marks:number, user:JwtPayload )=>{
+    const isSubmissionExists = await Submission.findById(submissionId)
+    if(!isSubmissionExists){
+        throw new Error("Submission does not exists");
+    }
+    const isAssignmentExists = await Assignment.findById(isSubmissionExists.assignment).populate("classroom")
+    if(!isAssignmentExists){
+        throw new Error("Assignment does not exists");
+    }
+    if(isAssignmentExists.totalMarks < marks || marks < 0){
+        throw new Error("Marks should be less than or equal to total marks");   
+    }
+    if((isAssignmentExists?.classroom as unknown as IClassroom).faculty.toString() !== user._id.toString()){
+        throw new Error("You are not Authorized to evaluate Assignment Submissions!!!");
+    }
+    const result  = await Submission.findByIdAndUpdate(submissionId, {marks:Number(marks)}, {new:true})
+    return result                           
+}
+
 export const SubmissionServices = {
     submitAssignment,
     getAssignmentSubmissions,
-    getASingleSubmission
+    getASingleSubmission,
+    myAssignmentSubmission,
+    evaluateSubmission  
 }

@@ -14,6 +14,28 @@ const createAssignment = catchAsync(async(req:CustomRequest, res)=>{
     })
 })
 
+const getClassroomAssignments = catchAsync(async(req:CustomRequest, res)=>{
+    const result  = await AssignmentServices.getClassroomAssignments(req.params.classroomId, req.user as JwtPayload)
+    sendResponse(res, {
+        statusCode:200,
+        message:"Successfully fetched Assignments",
+        success:true,
+        data:result
+    })
+})
+
+const getASingleAssignment = catchAsync(async(req:CustomRequest, res)=>{
+    const result  = await AssignmentServices.getASingleAssignment(req.params.assignmentId, req.user as JwtPayload)
+    sendResponse(res, {
+        statusCode:200,
+        message:"Successfully fetched Assignment",
+        success:true,
+        data:result
+    })
+})
+
 export const AssignmentControllers = {
-    createAssignment
+    createAssignment,
+    getClassroomAssignments,
+    getASingleAssignment
 }

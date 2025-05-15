@@ -32,9 +32,32 @@ const getASingleSubmission = catchAsync(async(req:CustomRequest, res)=>{
         data:result
     })
 })
+const myAssignmentSubmission = catchAsync(async(req:CustomRequest, res)=>{
+    const result = await SubmissionServices.myAssignmentSubmission(req.params.assignmentId, req.user as JwtPayload)
+    sendResponse(res, {
+        statusCode:200,
+        message:"Successfully fetched Assignment Submission",
+        success:true,
+        data:result
+    })     
+
+})
+
+const evaluateSubmission = catchAsync(async(req:CustomRequest, res)=>{
+    const result = await SubmissionServices.evaluateSubmission(req.params.submissionId, req.body.marks, req.user as JwtPayload)
+    sendResponse(res, {
+        statusCode:200,
+        message:"Successfully evaluated Assignment Submission",
+        success:true,
+        data:result
+    })          
+})
+
 
 export const SubmissionControllers = {
     submitAssignment,
     getAssignmentSubmissions,
-    getASingleSubmission
+    getASingleSubmission,
+    myAssignmentSubmission,
+    evaluateSubmission
 }
