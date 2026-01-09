@@ -43,14 +43,6 @@ async function main(){
 
         server.listen(config.port, ()=>{
             console.log(`Application is a listening on port ${config.port}`)
-            setInterval(() => {
-                fetch(`https://your-railway-app.up.railway.app/api/v1`)
-                  .then(res => {
-                    const data = res.json()
-                    console.log(data)
-                })
-                  .catch(err => console.error('Self-ping error:', err));
-              }, 15 * 60 * 1000); 
         })
     } catch (error) {
         console.log(error)
