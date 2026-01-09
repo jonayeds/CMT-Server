@@ -36,13 +36,13 @@ async function main(){
             })
             
             socket.on('disconnect', ()=>{
-                console.log("user is disconected")
+                console.log("user is disconnected")
             })
         }) 
 
 
         server.listen(config.port, ()=>{
-            console.log(`Application is a listening on port ${config.port}`)
+            console.log(`Application is listening on port ${config.port}`)
         })
     } catch (error) {
         console.log(error)
