@@ -25,13 +25,15 @@ const createContent = async (payload: IContent, user: JwtPayload) => {
 };
 
 const getClassroomContents = async (classroomId: string, user: JwtPayload) => {
-  const isClassroomExists = await Classroom.findById(classroomId);
+  const isClassroomExists = await Classroom.findById(classroomId).populate(
+    "faculty"
+  );
   if (!isClassroomExists) {
     throw new Error("Classroom not found");
   }
   if (
     user.role === userRoles.FACULTY &&
-    isClassroomExists.faculty.toString() !== user._id
+    isClassroomExists.faculty._id.toString() !== user._id
   ) {
     throw new Error(
       "You are not authorized to access this classroom contents!!!"
@@ -48,7 +50,7 @@ const getClassroomContents = async (classroomId: string, user: JwtPayload) => {
   }
 
   const result = await Content.find({ classroom: classroomId });
-  return result;
+  return { contents: result, faculty: isClassroomExists.faculty };
 };
 
 const deleteContent = async (contentId: string, user: JwtPayload) => {
@@ -84,16 +86,14 @@ const getASingleContent = async (contentId: string, user: JwtPayload) => {
   ) {
     throw new Error("You are not authorized to access this content");
   }
-  if(user.role === userRoles.STUDENT){
-      const isJoined = await Classroom.isJoinedClassroom(
-        user._id,
-        isContentExists.classroom._id.toString()
-      );
-      if(!isJoined){
-        throw new Error("You are not authorized to access this content");
-        
-      }
-    
+  if (user.role === userRoles.STUDENT) {
+    const isJoined = await Classroom.isJoinedClassroom(
+      user._id,
+      isContentExists.classroom._id.toString()
+    );
+    if (!isJoined) {
+      throw new Error("You are not authorized to access this content");
+    }
   }
   return isContentExists;
 };

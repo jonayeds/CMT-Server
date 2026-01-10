@@ -5,7 +5,10 @@ import { Attendance } from "../attendance/attendance.model";
 import { userRoles } from "../user/user.constant";
 import mongoose from "mongoose";
 import { hasClassConflicts } from "./classroom.utils";
-import { deleteClassSchedule, updateClassCountSchedule } from "../attendance/attendance.schedule";
+import {
+  deleteClassSchedule,
+  updateClassCountSchedule,
+} from "../attendance/attendance.schedule";
 import { User } from "../user/user.model";
 
 const createClassroomIntoDB = async (payload: IClassroom, user: JwtPayload) => {
@@ -53,18 +56,21 @@ const getAllClassrooms = async () => {
   return result;
 };
 
-const getASingleClassroom = async (classroomId: string, user:JwtPayload) => {
-  const result = await Classroom.findById(classroomId).populate("faculty");
+const getASingleClassroom = async (classroomId: string, user: JwtPayload) => {
+  const result = await Classroom.findById(classroomId);
   if (!result) {
     throw new Error("Classroom  not found!!!");
   }
-  if(user.role === userRoles.STUDENT){
-    const isAttendanceExists = await Attendance.findOne({classroom:classroomId, student:user._id})
-    if(!isAttendanceExists){
-      throw new Error("You are not joined in this classroom")
+  if (user.role === userRoles.STUDENT) {
+    const isAttendanceExists = await Attendance.findOne({
+      classroom: classroomId,
+      student: user._id,
+    });
+    if (!isAttendanceExists) {
+      throw new Error("You are not joined in this classroom");
     }
-  }else if(user._id.toString() !== result.faculty._id.toString() ){
-    throw new Error("You are not owner of this classroom")
+  } else if (user._id.toString() !== result.faculty._id.toString()) {
+    throw new Error("You are not owner of this classroom");
   }
   return result;
 };
@@ -77,26 +83,27 @@ const deleteClassroomFromDB = async (classroomId: string, user: JwtPayload) => {
   if (classroom.faculty.toString() !== user._id) {
     throw new Error("You are unauthorized to delete the Classroom");
   }
-  const session = await mongoose.startSession()
+  const session = await mongoose.startSession();
   try {
-    session.startTransaction()
-    const deletedAttendance = await Attendance.deleteMany({classroom:classroomId})
-    if(!deletedAttendance){
-      throw new Error("Something went wrong")
+    session.startTransaction();
+    const deletedAttendance = await Attendance.deleteMany({
+      classroom: classroomId,
+    });
+    if (!deletedAttendance) {
+      throw new Error("Something went wrong");
     }
     const result = await Classroom.findByIdAndDelete(classroomId);
-    if(!result){
-      throw new Error("Something went wrong")
+    if (!result) {
+      throw new Error("Something went wrong");
     }
-    deleteClassSchedule(classroomId)
-    await session.commitTransaction()
-    await session.endSession()
+    deleteClassSchedule(classroomId);
+    await session.commitTransaction();
+    await session.endSession();
     return result;
-
   } catch (error) {
-    await session.abortTransaction()
-    await session.endSession()
-    throw new Error("Something went wrong")
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error("Something went wrong");
   }
 };
 
@@ -217,35 +224,51 @@ const getMyClassrooms = async (user: JwtPayload) => {
   return null;
 };
 
-const getClassroomStudents = async(classroomId:string, user:JwtPayload)=>{
-  if(user.role === "student"){
-    const isJoined = await Classroom.isJoinedClassroom(user._id, classroomId)
-    if(!isJoined){
+const getClassroomStudents = async (classroomId: string, user: JwtPayload) => {
+  if (user.role === "student") {
+    const isJoined = await Classroom.isJoinedClassroom(user._id, classroomId);
+    if (!isJoined) {
       throw new Error("Not joined in this classroom");
     }
-  }else{
-    const isClassroomExists = await Classroom.findOne({faculty:user._id, _id:classroomId})
-    if(!isClassroomExists){
-      throw new Error("Classroom does not exists!!!");
+  }
+  const isClassroomExists = await Classroom.findOne({
+    _id: classroomId,
+  });
+  if (user.role === "faculty") {
+    if (isClassroomExists?.faculty.toString() !== user._id) {
+      throw new Error("You are not owner of this classroom");
     }
   }
-  const result = await Attendance.find({classroom:classroomId}).populate("student classroom")
-  return result
-}
+  if (!isClassroomExists) {
+    throw new Error("Classroom does not exists!!!");
+  }
 
-const removeStudentFromClassroom = async(classroomId:string, studentId:string, user:JwtPayload)=>{
-  const isclassroomOwner = Classroom.findOne({faculty:user._id})
-  if(!isclassroomOwner){
+  const result = await Attendance.find({ classroom: classroomId }).populate(
+    "student classroom"
+  );
+  const faculty = await User.findById(isClassroomExists.faculty._id);
+  return { students: result, faculty };
+};
+
+const removeStudentFromClassroom = async (
+  classroomId: string,
+  studentId: string,
+  user: JwtPayload
+) => {
+  const isclassroomOwner = Classroom.findOne({ faculty: user._id });
+  if (!isclassroomOwner) {
     throw new Error("You are not Authorized to remove user!");
   }
-  const isStudentExist = User.findById(studentId)
-  if(!isStudentExist){
+  const isStudentExist = User.findById(studentId);
+  if (!isStudentExist) {
     throw new Error("Student not found!!");
-    
   }
-  const result = await Attendance.findOneAndDelete({student: studentId, classroom:classroomId})
-  return result
-}
+  const result = await Attendance.findOneAndDelete({
+    student: studentId,
+    classroom: classroomId,
+  });
+  return result;
+};
 
 export const ClassroomService = {
   createClassroomIntoDB,
